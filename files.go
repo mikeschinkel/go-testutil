@@ -1,14 +1,15 @@
 package testutil
 
 import (
-	"os"
 	"testing"
+
+	"github.com/mikeschinkel/go-dt"
 )
 
-func LoadFile(t *testing.T, file string, mustLoad bool) (data []byte) {
+func LoadFile(t *testing.T, file dt.Filepath, mustLoad bool) (data []byte) {
 	var err error
 
-	data, err = os.ReadFile(file)
+	data, err = file.ReadFile()
 	if err != nil && mustLoad {
 		t.Fatal(err)
 	}
