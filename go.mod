@@ -5,9 +5,9 @@ go 1.25.3
 require github.com/mikeschinkel/go-cliutil v0.0.0-20251103044509-f4857eae9f54
 
 require (
-	github.com/mikeschinkel/go-dt v0.0.0-20251103073248-cc1248280ed9
-	github.com/mikeschinkel/go-dt/appinfo v0.0.0-20251103073248-cc1248280ed9 // indirect
-	github.com/mikeschinkel/go-dt/de v0.0.0-20251103073248-cc1248280ed9 // indirect
+	github.com/mikeschinkel/go-dt v0.0.0-20251103083857-4c80f1a95372
+	github.com/mikeschinkel/go-dt/appinfo v0.0.0-20251103083857-4c80f1a95372 // indirect
+	github.com/mikeschinkel/go-dt/de v0.0.0-20251103083857-4c80f1a95372 // indirect
 )
 
 replace (
