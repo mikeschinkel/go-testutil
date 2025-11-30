@@ -95,7 +95,7 @@ func (h *BufferedLogHandler) Contains(s string) bool {
 }
 
 // GetLogEntries parses the buffer into log entries
-func (h *BufferedLogHandler) GetLogEntries() ([]map[string]interface{}, error) {
+func (h *BufferedLogHandler) GetLogEntries() ([]map[string]any, error) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
