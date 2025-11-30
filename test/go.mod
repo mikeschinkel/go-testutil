@@ -10,5 +10,5 @@ require (
 	github.com/mikeschinkel/go-cliutil v0.2.0 // indirect
 	github.com/mikeschinkel/go-dt/appinfo v0.2.1 // indirect
 	github.com/mikeschinkel/go-dt/dtx v0.2.1 // indirect
-	github.com/mikeschinkel/go-testutil v0.1.0 // indirect
+	github.com/mikeschinkel/go-testutil v0.2.0 // indirect
 )
