@@ -12,8 +12,8 @@ import (
 
 // BufferedWriter implements cliutil.Writer and captures all output in buffers for testing
 type BufferedWriter struct {
-	stdout     *bytes.Buffer
-	stderr     *bytes.Buffer
+	stdBuf     *bytes.Buffer
+	errBuf     *bytes.Buffer
 	mu         sync.RWMutex
 	quiet      bool
 	verbosity  int
@@ -29,25 +29,11 @@ var _ cliutil.Writer = (*BufferedWriter)(nil)
 // NewBufferedWriter creates a new BufferedWriter with default settings
 func NewBufferedWriter() *BufferedWriter {
 	return &BufferedWriter{
-		stdout:    &bytes.Buffer{},
-		stderr:    &bytes.Buffer{},
+		stdBuf:    &bytes.Buffer{},
+		errBuf:    &bytes.Buffer{},
 		quiet:     false,
 		verbosity: 3, // Default to max verbosity for testing
 		useLevel:  1, // Default level
-	}
-}
-
-// NewBufferedWriterWithVerbosity creates a BufferedWriter with specified verbosity level
-func NewBufferedWriterWithVerbosity(verbosity int) *BufferedWriter {
-	if verbosity < 1 || verbosity > 3 {
-		panic(fmt.Sprintf("Invalid verbosity for BufferedWriter; must be between 1-3; got %d", verbosity))
-	}
-	return &BufferedWriter{
-		stdout:    &bytes.Buffer{},
-		stderr:    &bytes.Buffer{},
-		quiet:     false,
-		verbosity: verbosity,
-		useLevel:  1,
 	}
 }
 
@@ -64,7 +50,7 @@ func (w *BufferedWriter) Printf(format string, args ...any) {
 	}
 
 	formatted := fmt.Sprintf(format, args...)
-	w.stdout.WriteString(formatted)
+	w.stdBuf.WriteString(formatted)
 }
 
 // Errorf writes formatted error output to doterr buffer
@@ -72,18 +58,18 @@ func (w *BufferedWriter) Errorf(format string, args ...any) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	// Process error arguments to flatten newlines (same as cliutil.cliWriter)
+	// Process error arguments to flatten newlines (same as cliWriter)
 	processedArgs := make([]any, len(args))
 	for i, arg := range args {
 		if err, ok := arg.(error); ok {
-			processedArgs[i] = strings.Replace(err.Error(), "\n", "; ", -1)
+			processedArgs[i] = strings.ReplaceAll(err.Error(), "\n", "; ")
 		} else {
 			processedArgs[i] = arg
 		}
 	}
 
 	formatted := fmt.Sprintf(format, processedArgs...)
-	w.stderr.WriteString(formatted)
+	w.errBuf.WriteString(formatted)
 }
 
 // Loud returns a Writer that ignores the quiet setting
@@ -96,8 +82,8 @@ func (w *BufferedWriter) Loud() cliutil.Writer {
 	}
 
 	w.loudWriter = &BufferedWriter{
-		stdout:    w.stdout, // Share the same buffers
-		stderr:    w.stderr,
+		stdBuf:    w.stdBuf, // Share the same buffers
+		errBuf:    w.errBuf,
 		quiet:     false, // Always loud
 		verbosity: w.verbosity,
 		useLevel:  w.useLevel,
@@ -115,8 +101,8 @@ func (w *BufferedWriter) V2() cliutil.Writer {
 	}
 
 	w.v2Writer = &BufferedWriter{
-		stdout:    w.stdout, // Share the same buffers
-		stderr:    w.stderr,
+		stdBuf:    w.stdBuf, // Share the same buffers
+		errBuf:    w.errBuf,
 		quiet:     w.quiet,
 		verbosity: w.verbosity,
 		useLevel:  2, // Level 2
@@ -134,8 +120,8 @@ func (w *BufferedWriter) V3() cliutil.Writer {
 	}
 
 	w.v3Writer = &BufferedWriter{
-		stdout:    w.stdout, // Share the same buffers
-		stderr:    w.stderr,
+		stdBuf:    w.stdBuf, // Share the same buffers
+		errBuf:    w.errBuf,
 		quiet:     w.quiet,
 		verbosity: w.verbosity,
 		useLevel:  3, // Level 3
@@ -149,50 +135,50 @@ func (w *BufferedWriter) V3() cliutil.Writer {
 func (w *BufferedWriter) GetStdout() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
-	return w.stdout.String()
+	return w.stdBuf.String()
 }
 
 // GetStderr returns the current doterr buffer contents
 func (w *BufferedWriter) GetStderr() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
-	return w.stderr.String()
+	return w.errBuf.String()
 }
 
 // GetAllOutput returns both stdout and doterr combined
 func (w *BufferedWriter) GetAllOutput() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
-	return w.stdout.String() + w.stderr.String()
+	return w.stdBuf.String() + w.errBuf.String()
 }
 
 // ContainsStdout returns true if stdout buffer contains the specified substring
 func (w *BufferedWriter) ContainsStdout(s string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
-	return strings.Contains(w.stdout.String(), s)
+	return strings.Contains(w.stdBuf.String(), s)
 }
 
 // ContainsStderr returns true if doterr buffer contains the specified substring
 func (w *BufferedWriter) ContainsStderr(s string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
-	return strings.Contains(w.stderr.String(), s)
+	return strings.Contains(w.errBuf.String(), s)
 }
 
 // ContainsOutput returns true if either buffer contains the specified substring
 func (w *BufferedWriter) ContainsOutput(s string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
-	return strings.Contains(w.stdout.String(), s) || strings.Contains(w.stderr.String(), s)
+	return strings.Contains(w.stdBuf.String(), s) || strings.Contains(w.errBuf.String(), s)
 }
 
 // Reset clears both stdout and doterr buffers
 func (w *BufferedWriter) Reset() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	w.stdout.Reset()
-	w.stderr.Reset()
+	w.stdBuf.Reset()
+	w.errBuf.Reset()
 }
 
 // SetQuiet sets the quiet mode (suppresses all Printf output)
@@ -217,7 +203,7 @@ func (w *BufferedWriter) GetStdoutLines() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	content := w.stdout.String()
+	content := w.stdBuf.String()
 	if content == "" {
 		return []string{}
 	}
@@ -237,7 +223,7 @@ func (w *BufferedWriter) GetStderrLines() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	content := w.stderr.String()
+	content := w.errBuf.String()
 	if content == "" {
 		return []string{}
 	}
@@ -263,9 +249,9 @@ func (w *BufferedWriter) CountStderrLines() int {
 }
 
 func (w *BufferedWriter) Writer() io.Writer {
-	return w.stdout
+	return w.stdBuf
 }
 
 func (w *BufferedWriter) ErrWriter() io.Writer {
-	return w.stderr
+	return w.errBuf
 }

@@ -1,10 +1,12 @@
-package testutil
+package test
 
 import (
 	"log/slog"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/mikeschinkel/go-testutil"
 )
 
 func TestNewLogEntry(t *testing.T) {
@@ -13,7 +15,7 @@ func TestNewLogEntry(t *testing.T) {
 	record := slog.NewRecord(now, slog.LevelInfo, "Test message", 0)
 
 	// Create LogEntry from record
-	entry := NewLogEntry(record)
+	entry := testutil.NewLogEntry(record)
 
 	// Verify fields
 	if entry.Level != "INFO" {
@@ -47,7 +49,7 @@ func TestNewLogEntry_AllLevels(t *testing.T) {
 	for _, tc := range levels {
 		t.Run(tc.expected, func(t *testing.T) {
 			record := slog.NewRecord(time.Now(), tc.level, "Test message", 0)
-			entry := NewLogEntry(record)
+			entry := testutil.NewLogEntry(record)
 
 			if entry.Level != tc.expected {
 				t.Errorf("Expected Level %q, got %q", tc.expected, entry.Level)
@@ -57,7 +59,7 @@ func TestNewLogEntry_AllLevels(t *testing.T) {
 }
 
 func TestLogEntry_String_WithDateTime(t *testing.T) {
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Level:        "INFO",
 		Message:      "Test message",
 		DateTime:     "2023-12-25 10:30:45",
@@ -74,7 +76,7 @@ func TestLogEntry_String_WithDateTime(t *testing.T) {
 }
 
 func TestLogEntry_String_WithoutDateTime(t *testing.T) {
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Level:        "ERROR",
 		Message:      "Error occurred",
 		DateTime:     "2023-12-25 10:30:45",
@@ -91,7 +93,7 @@ func TestLogEntry_String_WithoutDateTime(t *testing.T) {
 }
 
 func TestLogEntry_String_NoAttributes(t *testing.T) {
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Level:        "WARN",
 		Message:      "Warning message",
 		DateTime:     "2023-12-25 10:30:45",
@@ -108,7 +110,7 @@ func TestLogEntry_String_NoAttributes(t *testing.T) {
 }
 
 func TestLogEntry_String_EmptyMessage(t *testing.T) {
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Level:        "DEBUG",
 		Message:      "",
 		DateTime:     "2023-12-25 10:30:45",
@@ -154,7 +156,7 @@ func TestLogEntry_AttrsString(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			entry := LogEntry{Attrs: tc.attrs}
+			entry := testutil.LogEntry{Attrs: tc.attrs}
 			result := entry.AttrsString()
 
 			if result != tc.expected {
@@ -165,7 +167,7 @@ func TestLogEntry_AttrsString(t *testing.T) {
 }
 
 func TestLogEntry_AttrsString_ComplexValues(t *testing.T) {
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Attrs: []string{
 			"user=alice@example.com",
 			"request_id=abc-123-def",
@@ -184,7 +186,7 @@ func TestLogEntry_AttrsString_ComplexValues(t *testing.T) {
 }
 
 func TestLogEntries_String_Multiple(t *testing.T) {
-	entries := LogEntries{
+	entries := testutil.LogEntries{
 		{
 			Level:        "INFO",
 			Message:      "First message",
@@ -215,7 +217,7 @@ func TestLogEntries_String_Multiple(t *testing.T) {
 }
 
 func TestLogEntries_String_Empty(t *testing.T) {
-	entries := LogEntries{}
+	entries := testutil.LogEntries{}
 	result := entries.String()
 
 	if result != "" {
@@ -224,7 +226,7 @@ func TestLogEntries_String_Empty(t *testing.T) {
 }
 
 func TestLogEntries_String_SingleEntry(t *testing.T) {
-	entries := LogEntries{
+	entries := testutil.LogEntries{
 		{
 			Level:        "WARN",
 			Message:      "Single warning",
@@ -243,7 +245,7 @@ func TestLogEntries_String_SingleEntry(t *testing.T) {
 }
 
 func TestLogEntry_JSONMarshaling(t *testing.T) {
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Level:        "INFO",
 		Message:      "Test message",
 		DateTime:     "2023-12-25 10:30:45",
@@ -269,7 +271,7 @@ func TestLogEntry_JSONMarshaling(t *testing.T) {
 
 func TestLogEntry_FieldValues(t *testing.T) {
 	// Test that all field types work correctly
-	entry := LogEntry{}
+	entry := testutil.LogEntry{}
 
 	// Test string fields
 	entry.Level = "TEST"
@@ -310,7 +312,7 @@ func TestLogEntry_Integration(t *testing.T) {
 	now := time.Date(2023, 12, 25, 10, 30, 45, 0, time.UTC)
 	record := slog.NewRecord(now, slog.LevelError, "Integration test", 0)
 
-	entry := NewLogEntry(record)
+	entry := testutil.NewLogEntry(record)
 	entry.Attrs = []string{"source=integration_test", "test_id=12345"}
 
 	// Test default behavior (with datetime)

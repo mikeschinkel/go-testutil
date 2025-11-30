@@ -1,4 +1,4 @@
-package testutil
+package test
 
 import (
 	"errors"
@@ -6,10 +6,11 @@ import (
 	"testing"
 
 	"github.com/mikeschinkel/go-cliutil"
+	"github.com/mikeschinkel/go-testutil"
 )
 
 func TestBufferedWriter_Basic(t *testing.T) {
-	writer := NewBufferedWriter()
+	writer := testutil.NewBufferedWriter()
 
 	// Test basic Printf
 	writer.Printf("Hello %s", "World")
@@ -25,7 +26,7 @@ func TestBufferedWriter_Basic(t *testing.T) {
 }
 
 func TestBufferedWriter_Interface(t *testing.T) {
-	var w cliutil.Writer = NewBufferedWriter()
+	var w cliutil.Writer = testutil.NewBufferedWriter()
 
 	// Test that all interface methods are available
 	w.Printf("test")
@@ -46,7 +47,8 @@ func TestBufferedWriter_Interface(t *testing.T) {
 }
 
 func TestBufferedWriter_VerbosityLevels(t *testing.T) {
-	writer := NewBufferedWriterWithVerbosity(2)
+	writer := testutil.NewBufferedWriter()
+	writer.SetVerbosity(2)
 
 	// Level 1 should work (verbosity 2 >= useLevel 1)
 	writer.Printf("Level 1 message")
@@ -74,7 +76,7 @@ func TestBufferedWriter_VerbosityLevels(t *testing.T) {
 }
 
 func TestBufferedWriter_QuietMode(t *testing.T) {
-	writer := NewBufferedWriter()
+	writer := testutil.NewBufferedWriter()
 	writer.SetQuiet(true)
 
 	// Printf should be suppressed in quiet mode
@@ -98,7 +100,7 @@ func TestBufferedWriter_QuietMode(t *testing.T) {
 }
 
 func TestBufferedWriter_ErrorFormatting(t *testing.T) {
-	writer := NewBufferedWriter()
+	writer := testutil.NewBufferedWriter()
 
 	// Test error with newlines gets flattened
 	err := errors.New("line 1\nline 2\nline 3")
@@ -111,7 +113,7 @@ func TestBufferedWriter_ErrorFormatting(t *testing.T) {
 }
 
 func TestBufferedWriter_HelperMethods(t *testing.T) {
-	writer := NewBufferedWriter()
+	writer := testutil.NewBufferedWriter()
 
 	// Test line counting
 	writer.Printf("Line 1\n")
@@ -139,7 +141,7 @@ func TestBufferedWriter_HelperMethods(t *testing.T) {
 }
 
 func TestBufferedWriter_SharedBuffers(t *testing.T) {
-	writer := NewBufferedWriter()
+	writer := testutil.NewBufferedWriter()
 
 	// Test that V2 and V3 share the same buffers
 	writer.Printf("Main message\n")
@@ -159,7 +161,7 @@ func TestBufferedWriter_SharedBuffers(t *testing.T) {
 }
 
 func TestBufferedWriter_ConcurrentAccess(t *testing.T) {
-	writer := NewBufferedWriter()
+	writer := testutil.NewBufferedWriter()
 
 	// Test concurrent writes don't cause data races
 	done := make(chan bool, 2)

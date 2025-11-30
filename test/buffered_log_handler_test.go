@@ -1,4 +1,4 @@
-package testutil
+package test
 
 import (
 	"context"
@@ -7,10 +7,12 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/mikeschinkel/go-testutil"
 )
 
 func TestBufferedLogHandler_Basic(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Test basic logging
@@ -36,7 +38,7 @@ func TestBufferedLogHandler_Basic(t *testing.T) {
 }
 
 func TestBufferedLogHandler_SlogInterface(t *testing.T) {
-	var handler slog.Handler = NewBufferedLogHandler()
+	var handler slog.Handler = testutil.NewBufferedLogHandler()
 
 	// Test that all slog.Handler interface methods are available
 	ctx := context.Background()
@@ -73,7 +75,7 @@ func TestBufferedLogHandler_SlogInterface(t *testing.T) {
 }
 
 func TestBufferedLogHandler_LogLevels(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Test all standard log levels
@@ -93,7 +95,7 @@ func TestBufferedLogHandler_LogLevels(t *testing.T) {
 }
 
 func TestBufferedLogHandler_WithAttributes(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Test logging with attributes
@@ -120,7 +122,7 @@ func TestBufferedLogHandler_WithAttributes(t *testing.T) {
 }
 
 func TestBufferedLogHandler_JSONStructure(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	logger.Info("Test message", slog.String("key", "value"))
@@ -162,7 +164,7 @@ func TestBufferedLogHandler_JSONStructure(t *testing.T) {
 }
 
 func TestBufferedLogHandler_GetLogEntriesByLevel(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Log messages at different levels
@@ -221,7 +223,7 @@ func TestBufferedLogHandler_GetLogEntriesByLevel(t *testing.T) {
 }
 
 func TestBufferedLogHandler_Reset(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Add some log entries
@@ -251,7 +253,7 @@ func TestBufferedLogHandler_Reset(t *testing.T) {
 }
 
 func TestBufferedLogHandler_ThreadSafety(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	const numGoroutines = 10
@@ -297,7 +299,7 @@ func TestBufferedLogHandler_ThreadSafety(t *testing.T) {
 }
 
 func TestBufferedLogHandler_ComplexAttributes(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Test with complex nested attributes
@@ -350,7 +352,7 @@ func TestBufferedLogHandler_ComplexAttributes(t *testing.T) {
 }
 
 func TestBufferedLogHandler_EmptyAndSpecialCases(t *testing.T) {
-	handler := NewBufferedLogHandler()
+	handler := testutil.NewBufferedLogHandler()
 	logger := slog.New(handler)
 
 	// Test empty message
@@ -382,7 +384,7 @@ func TestBufferedLogHandler_EmptyAndSpecialCases(t *testing.T) {
 
 func TestLogEntry_String(t *testing.T) {
 	// Test LogEntry string formatting
-	entry := LogEntry{
+	entry := testutil.LogEntry{
 		Level:        "INFO",
 		Message:      "Test message",
 		DateTime:     "2023-12-25 10:30:45",
@@ -406,7 +408,7 @@ func TestLogEntry_String(t *testing.T) {
 }
 
 func TestLogEntries_String(t *testing.T) {
-	entries := LogEntries{
+	entries := testutil.LogEntries{
 		{Level: "INFO", Message: "Message 1", Attrs: []string{"attr1=val1"}, OmitDateTime: true},
 		{Level: "ERROR", Message: "Message 2", Attrs: []string{"attr2=val2"}, OmitDateTime: true},
 	}

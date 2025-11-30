@@ -11,7 +11,7 @@ import (
 
 // BufferedLogHandler implements slog.Handler and captures logs in a buffer
 type BufferedLogHandler struct {
-	opts   slog.HandlerOptions
+	//opts   slog.HandlerOptions
 	buffer *bytes.Buffer
 	mu     sync.Mutex
 }
