@@ -10,7 +10,7 @@ import (
 // Example demonstrating basic usage of go-testutil for testing helpers
 func main() {
 	fmt.Println("go-testutil Basic Usage Example")
-	fmt.Println("================================\n")
+	fmt.Printf("================================%s", "\n\n")
 
 	// Example 1: BufferedWriter for capturing output
 	fmt.Println("1. BufferedWriter Example")
@@ -73,11 +73,22 @@ func main() {
 	fmt.Println("\n5. BufferedLogger Example")
 	fmt.Println("   Simple buffered logger for basic testing needs")
 
-	buffLogger := testutil.NewBufferedLogger()
-	buffLogger.Log("First log message")
-	buffLogger.Log("Second log message")
+	buffLogger := testutil.GetBufferedLogger()
+	buffLogger.Info("First log message")
+	buffLogger.Info("Second log message")
 
-	fmt.Printf("   Logger captured %d messages\n", 2)
+	logEntries, err := testutil.GetBufferedLogHandler().GetLogEntries()
+	if err != nil {
+		fmt.Printf("   Error reading entries: %v\n", err)
+	} else {
+		fmt.Printf("   Logger captured %d messages\n", len(logEntries))
+		for i, entry := range logEntries {
+			fmt.Printf("   - Entry %d:\n", i+1)
+			for key, value := range entry {
+				fmt.Printf("     - %s: %v\n", key, value)
+			}
+		}
+	}
 
 	// Example 6: Quiet mode
 	fmt.Println("\n6. Quiet Mode Example")
