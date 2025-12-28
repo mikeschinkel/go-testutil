@@ -131,49 +131,49 @@ func (w *BufferedWriter) V3() cliutil.Writer {
 
 // Testing helper methods
 
-// GetStdout returns the current stdout buffer contents
-func (w *BufferedWriter) GetStdout() string {
+// GetPrintOutput returns the current Printf buffer contents
+func (w *BufferedWriter) GetPrintOutput() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return w.stdBuf.String()
 }
 
-// GetStderr returns the current doterr buffer contents
-func (w *BufferedWriter) GetStderr() string {
+// GetErrorOutput returns the current Errorf buffer contents
+func (w *BufferedWriter) GetErrorOutput() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return w.errBuf.String()
 }
 
-// GetAllOutput returns both stdout and doterr combined
+// GetAllOutput returns both Printf and Errorf outout combined
 func (w *BufferedWriter) GetAllOutput() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return w.stdBuf.String() + w.errBuf.String()
 }
 
-// ContainsStdout returns true if stdout buffer contains the specified substring
+// ContainsStdout returns true if Printf buffer contains the specified substring
 func (w *BufferedWriter) ContainsStdout(s string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return strings.Contains(w.stdBuf.String(), s)
 }
 
-// ContainsStderr returns true if doterr buffer contains the specified substring
+// ContainsStderr returns true if Errorf buffer contains the specified substring
 func (w *BufferedWriter) ContainsStderr(s string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return strings.Contains(w.errBuf.String(), s)
 }
 
-// ContainsOutput returns true if either buffer contains the specified substring
+// ContainsOutput returns true if either Printf or Errorf buffer contains the specified substring
 func (w *BufferedWriter) ContainsOutput(s string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return strings.Contains(w.stdBuf.String(), s) || strings.Contains(w.errBuf.String(), s)
 }
 
-// Reset clears both stdout and doterr buffers
+// Reset clears both Printf and Errorf buffers
 func (w *BufferedWriter) Reset() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -198,8 +198,8 @@ func (w *BufferedWriter) SetVerbosity(verbosity int) {
 	w.verbosity = verbosity
 }
 
-// GetStdoutLines returns stdout content split into lines (excluding empty lines)
-func (w *BufferedWriter) GetStdoutLines() []string {
+// GetPrintLines returns stdout content split into lines (excluding empty lines)
+func (w *BufferedWriter) GetPrintLines() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
@@ -218,8 +218,8 @@ func (w *BufferedWriter) GetStdoutLines() []string {
 	return result
 }
 
-// GetStderrLines returns doterr content split into lines (excluding empty lines)
-func (w *BufferedWriter) GetStderrLines() []string {
+// GetErrorLines returns doterr content split into lines (excluding empty lines)
+func (w *BufferedWriter) GetErrorLines() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
@@ -238,14 +238,14 @@ func (w *BufferedWriter) GetStderrLines() []string {
 	return result
 }
 
-// CountStdoutLines returns the number of non-empty lines in stdout
-func (w *BufferedWriter) CountStdoutLines() int {
-	return len(w.GetStdoutLines())
+// CountPrintLines returns the number of non-empty lines in stdout
+func (w *BufferedWriter) CountPrintLines() int {
+	return len(w.GetPrintLines())
 }
 
-// CountStderrLines returns the number of non-empty lines in doterr
-func (w *BufferedWriter) CountStderrLines() int {
-	return len(w.GetStderrLines())
+// CountErrorLines returns the number of non-empty lines in doterr
+func (w *BufferedWriter) CountErrorLines() int {
+	return len(w.GetErrorLines())
 }
 
 func (w *BufferedWriter) Writer() io.Writer {

@@ -89,8 +89,8 @@ func runBufferedWriterCorpus(t *testing.T, data []byte) {
 	bw := testutil.NewBufferedWriter()
 	bw.Printf("%s", input)
 	bw.Errorf("%s", input)
-	_ = bw.GetStdout()
-	_ = bw.GetStderr()
+	_ = bw.GetPrintOutput()
+	_ = bw.GetErrorOutput()
 }
 
 func runBufferedLogHandlerCorpus(t *testing.T, data []byte) {
@@ -122,7 +122,7 @@ func runBufferedWriterVerbosityCorpus(t *testing.T, data []byte) {
 	bw := testutil.NewBufferedWriter()
 	bw.SetVerbosity(verbosity)
 	bw.Printf("test")
-	_ = bw.GetStdout()
+	_ = bw.GetPrintOutput()
 }
 
 // extractStringFromCorpus extracts a string value from Go's fuzz corpus format

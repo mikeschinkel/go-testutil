@@ -40,8 +40,8 @@ func FuzzBufferedWriter(f *testing.F) {
 		bw.Errorf("%s", input)
 
 		// Verify buffers are accessible
-		_ = bw.GetStdout()
-		_ = bw.GetStderr()
+		_ = bw.GetPrintOutput()
+		_ = bw.GetErrorOutput()
 	})
 }
 
@@ -110,6 +110,6 @@ func FuzzBufferedWriterVerbosity(f *testing.F) {
 		bw.SetVerbosity(verbosity)
 		bw.SetQuiet(true)
 		bw.Printf("test message")
-		_ = bw.GetStdout()
+		_ = bw.GetPrintOutput()
 	})
 }

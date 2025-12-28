@@ -23,8 +23,8 @@ func main() {
 	bw.Errorf("This goes to stderr\n")
 
 	// Retrieve what was written
-	fmt.Printf("   Captured stdout: %q\n", bw.GetStdout())
-	fmt.Printf("   Captured stderr: %q\n", bw.GetStderr())
+	fmt.Printf("   Captured stdout: %q\n", bw.GetPrintOutput())
+	fmt.Printf("   Captured stderr: %q\n", bw.GetErrorOutput())
 
 	// Example 2: BufferedWriter with verbosity
 	fmt.Println("\n2. BufferedWriter with Verbosity")
@@ -33,7 +33,7 @@ func main() {
 	bwVerbose := testutil.NewBufferedWriter()
 	bwVerbose.SetVerbosity(2)
 	bwVerbose.Printf("Verbose output\n")
-	fmt.Printf("   Captured: %q\n", bwVerbose.GetStdout())
+	fmt.Printf("   Captured: %q\n", bwVerbose.GetPrintOutput())
 
 	// Example 3: BufferedLogHandler for capturing log output
 	fmt.Println("\n3. BufferedLogHandler Example")
@@ -98,7 +98,7 @@ func main() {
 	bwQuiet.SetQuiet(true)
 	bwQuiet.Printf("This is suppressed\n")
 
-	output := bwQuiet.GetStdout()
+	output := bwQuiet.GetPrintOutput()
 	fmt.Printf("   Buffer is empty (output suppressed): %v\n", len(output) == 0)
 
 	fmt.Println("\nUsage Notes:")
