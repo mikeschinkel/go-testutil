@@ -8,6 +8,10 @@ The changes at filing time (2026-10-19), excluding `.endless/`:
 - This looks like one dependency change: go.mod bumps go-dt from v0.3.3 to v0.5.0 and adds local `replace` directives for go-cliutil, go-dt and go-dt/dtx, so the WIP builds against those siblings' own uncommitted main working trees. Those replaces are why this task waits on theirs.
 - go-cfgstore's test module requires go-testutil v0.3.0, which is not tagged yet, and reaches it through a local replace.
 
+## Modules
+
+Every directory with its own `go.mod` is a separate Go module, versioned independently: a module below the root is tagged with its directory as a prefix (`dtx/v0.2.1`), and one module's require of another, even within this repo, names a version or a `replace`. go-testutil's modules at filing time are the root, examples/basic_usage/ and test/. Analyze and report the changes per module, and list every module whose contents change, so the release that follows can decide each one's version bump on its own.
+
 ## Steps
 
 1. **Snapshot without touching main.** From this task's worktree, read the main checkout's full diff against HEAD, staged and unstaged together, including deletions, binaries and untracked non-`.endless/` files. Recreate it on a branch named `wip/<task-id>` cut from main's HEAD, and commit it there as one commit with message "WIP snapshot of main working tree". Then confirm the branch's tree matches main's working tree file for file. Don't use `git stash`; the stash stack is shared across sessions.
