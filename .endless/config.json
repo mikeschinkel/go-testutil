@@ -1,0 +1,12 @@
+{
+  "name": "go-testutil",
+  "label": "Test Utility Package for Go",
+  "description": "A Go package containing test utilities funcs used by other Go packages found at github.com/mikeschinkel/go-*.",
+  "language": "go",
+  "status": "active",
+  "dependencies": [],
+  "documents": {
+    "rules": []
+  },
+  "identity": "2407f5bb731c554fe127a24aa8b11044606a1be2"
+}
