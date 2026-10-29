@@ -1,0 +1,15 @@
+# Verification suite for E-2411 — landing main's uncommitted go.mod/go.sum
+# changes as the go-cliutil v0.4.0 / go-dt v0.6.1 bump.
+#
+# DO NOT EDIT unless you ARE E-2411 — see .endless/tasks/CLAUDE.md.
+#
+# One TAP check rather than gotest checks: go-testutil's tests live in the
+# separate test/ module, the examples in another, and the dependents in other
+# repos, so suite.sh walks each module itself.
+schema = 1
+task   = "E-2411"
+
+[[check]]
+runner  = "sh"
+command = "bash \"$ENDLESS_VERIFY_DIR\"/suite.sh"
+format  = "tap"
