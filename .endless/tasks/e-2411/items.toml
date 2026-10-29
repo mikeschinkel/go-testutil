@@ -63,8 +63,3 @@ statement = "go-testutil's root, test/ and examples/basic_usage modules require 
 id = "P13"
 kind = "deliverable"
 statement = "The Makefile and test.yml pin golangci-lint v2.15.0, since v2.6.2 cannot type-check under Go 1.27, and the root module lints clean with it"
-
-[[item]]
-id = "P14"
-kind = "deliverable"
-statement = "go-testutil carries the shared .endless/tasks/_harness.sh and _guard.sh, copied unchanged from endless, so its verify suites can source them"
