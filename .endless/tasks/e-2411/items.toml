@@ -53,3 +53,8 @@ statement = "Does not use git stash"
 id = "P11"
 kind = "deliverable"
 statement = "The report to the user groups the changes by module, each directory with its own go.mod being a separate, independently versioned module, and lists every module whose contents change"
+
+[[item]]
+id = "P12"
+kind = "deliverable"
+statement = "go-testutil's root, test/ and examples/basic_usage modules require go-cliutil v0.4.0 and go-dt v0.6.1 from published tags, with no replace for another repo's module (the user chose this over dropping the bump)"
