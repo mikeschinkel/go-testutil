@@ -63,3 +63,8 @@ statement = "go-testutil's root, test/ and examples/basic_usage modules require 
 id = "P13"
 kind = "deliverable"
 statement = "The Makefile and test.yml pin golangci-lint v2.15.0, since v2.6.2 cannot type-check under Go 1.27, and the root module lints clean with it"
+
+[[item]]
+id = "P15"
+kind = "deliverable"
+statement = "E-2411's suite is a verify.toml manifest whose one TAP check runs suite.sh beside it; go-testutil carries no verify.sh or shared harness"
