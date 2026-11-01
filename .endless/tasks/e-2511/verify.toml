@@ -1,0 +1,166 @@
+# Verification suite for E-2511 — preparing go-testutil for a tagged release.
+#
+# DO NOT EDIT unless you ARE E-2511 — see .endless/tasks/CLAUDE.md.
+#
+# Proves the tree this suite sits in: the test/ module's unit and fuzz-corpus
+# tests pass; every module builds, vets and is tidy from published tags alone
+# (GOWORK=off); the go-pkgs Go 1.27 baseline holds in go.mod and both
+# workflows; sibling go-pkgs modules are required by published version with no
+# cross-repo replace; main is clean and pushed outside .endless/; and no tag
+# for the proposed release exists, since the owner tags through the Release
+# workflow.
+schema = 1
+task   = "E-2511"
+
+# ── The project's own tests, first and fail-fast ────────────────────────────
+
+[[check]]
+name   = "test/: unit and fuzz-corpus tests"
+runner = "gotest"
+dir    = "test"
+paths  = ["./..."]
+
+# ── P3: build, vet and tests pass with GOWORK=off in every module ───────────
+
+[[check]]
+name = "root: go build and go vet with GOWORK=off"
+sh   = "GOWORK=off GOFLAGS=-mod=readonly go build ./... && GOWORK=off GOFLAGS=-mod=readonly go vet ./..."
+
+[[check]]
+name = "test/: go vet and go test -race with GOWORK=off"
+dir  = "test"
+sh   = "GOWORK=off GOFLAGS=-mod=readonly go vet ./... && GOWORK=off GOFLAGS=-mod=readonly go test -race ./..."
+
+[[check]]
+name = "examples/basic_usage: go build and go vet with GOWORK=off"
+dir  = "examples/basic_usage"
+sh   = "GOWORK=off GOFLAGS=-mod=readonly go build -o /dev/null . && GOWORK=off GOFLAGS=-mod=readonly go vet ./..."
+
+[[check]]
+name   = "gofmt -l reports nothing"
+sh     = "gofmt -l ."
+equals = ""
+
+[[check]]
+name   = "Makefile pins golangci-lint v2.15.0"
+sh     = "grep -oE 'golangci-lint@v[0-9.]+' Makefile"
+equals = "golangci-lint@v2.15.0"
+
+[[check]]
+name = "root: golangci-lint v2.15.0 reports no issues"
+sh   = "GOWORK=off go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0 run ./... --timeout=5m"
+
+# ── P6: go 1.27.0 and tidy in every module ──────────────────────────────────
+
+[[check]]
+name   = "root: go.mod says go 1.27.0"
+sh     = "GOWORK=off go list -m -f '{{.GoVersion}}'"
+equals = "1.27.0"
+
+[[check]]
+name   = "test/: go.mod says go 1.27.0"
+dir    = "test"
+sh     = "GOWORK=off go list -m -f '{{.GoVersion}}'"
+equals = "1.27.0"
+
+[[check]]
+name   = "examples/basic_usage: go.mod says go 1.27.0"
+dir    = "examples/basic_usage"
+sh     = "GOWORK=off go list -m -f '{{.GoVersion}}'"
+equals = "1.27.0"
+
+[[check]]
+name   = "root: go mod tidy -diff is empty"
+sh     = "GOWORK=off GOFLAGS=-mod=readonly go mod tidy -diff"
+equals = ""
+
+[[check]]
+name   = "test/: go mod tidy -diff is empty"
+dir    = "test"
+sh     = "GOWORK=off GOFLAGS=-mod=readonly go mod tidy -diff"
+equals = ""
+
+[[check]]
+name   = "examples/basic_usage: go mod tidy -diff is empty"
+dir    = "examples/basic_usage"
+sh     = "GOWORK=off GOFLAGS=-mod=readonly go mod tidy -diff"
+equals = ""
+
+# ── P2: siblings by published version; replace only in test/ and examples/ ──
+
+[[check]]
+name   = "root: requires go-cliutil v0.4.0 and go-dt v0.6.1 from published tags"
+sh     = "GOWORK=off go list -m -f '{{.Path}}@{{.Version}}' github.com/mikeschinkel/go-cliutil github.com/mikeschinkel/go-dt | paste -s -d ' ' -"
+equals = "github.com/mikeschinkel/go-cliutil@v0.4.0 github.com/mikeschinkel/go-dt@v0.6.1"
+
+[[check]]
+name   = "root: every go-pkgs sibling is required at a tagged vX.Y.Z"
+sh     = "grep -E '^[[:space:]]+github.com/mikeschinkel/' go.mod | grep -vE '^[[:space:]]+github.com/mikeschinkel/[^ ]+ v[0-9]+[.][0-9]+[.][0-9]+( // indirect)?$' || true"
+equals = ""
+
+[[check]]
+name   = "root: no replace directive"
+sh     = "grep -c '^replace' go.mod || true"
+equals = "0"
+
+[[check]]
+name   = "test/: the only replace points go-testutil at .."
+dir    = "test"
+sh     = "grep '^replace' go.mod"
+equals = "replace github.com/mikeschinkel/go-testutil => .."
+
+[[check]]
+name   = "examples/basic_usage: the only replace points go-testutil at ../../"
+dir    = "examples/basic_usage"
+sh     = "grep '^replace' go.mod"
+equals = "replace github.com/mikeschinkel/go-testutil => ../../"
+
+# ── P7: both workflows on Go 1.27, GOEXPERIMENT gone ────────────────────────
+
+[[check]]
+name   = "both workflows set up Go 1.27"
+sh     = "grep -h 'GO_VERSION:' .github/workflows/test.yml .github/workflows/release.yml | sort -u | tr -d ' '"
+equals = "GO_VERSION:'1.27'"
+
+[[check]]
+name   = "no workflow or Makefile mentions GOEXPERIMENT"
+sh     = "grep -rl GOEXPERIMENT .github Makefile || true"
+equals = ""
+
+# ── P8: release notes leave out commits that touch only .endless/ ───────────
+
+[[check]]
+name     = "release.yml excludes .endless/ from the commit list"
+sh       = "grep -F \"':(exclude).endless'\" .github/workflows/release.yml"
+contains = "git log ${PREV_TAG}..HEAD"
+
+# ── P9: /bin/ is gitignored and untracked ───────────────────────────────────
+
+[[check]]
+name   = "/bin/ is gitignored"
+sh     = "git check-ignore -q bin/basic_usage && echo ignored"
+equals = "ignored"
+
+[[check]]
+name   = "nothing under bin/ is tracked"
+sh     = "git ls-files bin"
+equals = ""
+
+# ── P1: main is clean outside .endless/ and pushed to origin ────────────────
+
+[[check]]
+name   = "main checkout has no uncommitted change outside .endless/"
+sh     = "git -C \"$(git rev-parse --git-common-dir)/..\" status --porcelain -- . ':(exclude).endless'"
+equals = ""
+
+[[check]]
+name   = "main holds no commit outside .endless/ that origin/main lacks"
+sh     = "git log origin/main..main --format='%h %s' -- . ':(exclude).endless'"
+equals = ""
+
+# ── P5: no tag was created; the owner tags through the Release workflow ─────
+
+[[check]]
+name   = "no v0.3.x tag exists yet"
+sh     = "git tag -l 'v0.3*'"
+equals = ""
