@@ -1,0 +1,906 @@
+{
+  "reportFormat": "CTRF",
+  "specVersion": "0.2.0",
+  "results": {
+    "tool": {
+      "name": "endless"
+    },
+    "summary": {
+      "tests": 87,
+      "passed": 87,
+      "failed": 0,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0,
+      "start": 1793505417369,
+      "stop": 1793505421416
+    },
+    "tests": [
+      {
+        "name": "TestBufferedLogHandler_Basic",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_SlogInterface",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_LogLevels",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_WithAttributes",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_JSONStructure",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_GetLogEntriesByLevel",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_Reset",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_ThreadSafety",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_ComplexAttributes",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedLogHandler_EmptyAndSpecialCases",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_String",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntries_String",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_Basic",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_Interface",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_VerbosityLevels",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_QuietMode",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_ErrorFormatting",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_HelperMethods",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_SharedBuffers",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestBufferedWriter_ConcurrentAccess",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestFuzzCorpus",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestNewLogEntry",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestNewLogEntry_AllLevels/DEBUG",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestNewLogEntry_AllLevels/INFO",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestNewLogEntry_AllLevels/WARN",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestNewLogEntry_AllLevels/ERROR",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestNewLogEntry_AllLevels",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_String_WithDateTime",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_String_WithoutDateTime",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_String_NoAttributes",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_String_EmptyMessage",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_AttrsString/multiple_attributes",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_AttrsString/single_attribute",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_AttrsString/empty_attributes",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_AttrsString/nil_attributes",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_AttrsString",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_AttrsString_ComplexValues",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntries_String_Multiple",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntries_String_Empty",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntries_String_SingleEntry",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_JSONMarshaling",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_FieldValues",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "TestLogEntry_Integration",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#0",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#1",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#2",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#3",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#4",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#5",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#6",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter/seed#7",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriter",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler/seed#0",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler/seed#1",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler/seed#2",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler/seed#3",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler/seed#4",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler/seed#5",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedLogHandler",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriterVerbosity/seed#0",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriterVerbosity/seed#1",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriterVerbosity/seed#2",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "FuzzBufferedWriterVerbosity",
+        "status": "passed",
+        "duration": 0,
+        "suite": [
+          "github.com/mikeschinkel/go-testutil/test"
+        ],
+        "labels": {
+          "check": "test/: unit and fuzz-corpus tests"
+        }
+      },
+      {
+        "name": "root: go build and go vet with GOWORK=off",
+        "status": "passed",
+        "duration": 468,
+        "labels": {
+          "check": "root: go build and go vet with GOWORK=off"
+        }
+      },
+      {
+        "name": "test/: go vet and go test -race with GOWORK=off",
+        "status": "passed",
+        "duration": 311,
+        "labels": {
+          "check": "test/: go vet and go test -race with GOWORK=off"
+        }
+      },
+      {
+        "name": "examples/basic_usage: go build and go vet with GOWORK=off",
+        "status": "passed",
+        "duration": 920,
+        "labels": {
+          "check": "examples/basic_usage: go build and go vet with GOWORK=off"
+        }
+      },
+      {
+        "name": "gofmt -l reports nothing",
+        "status": "passed",
+        "duration": 17,
+        "labels": {
+          "check": "gofmt -l reports nothing"
+        }
+      },
+      {
+        "name": "Makefile pins golangci-lint v2.15.0",
+        "status": "passed",
+        "duration": 5,
+        "labels": {
+          "check": "Makefile pins golangci-lint v2.15.0"
+        }
+      },
+      {
+        "name": "root: golangci-lint v2.15.0 reports no issues",
+        "status": "passed",
+        "duration": 2132,
+        "labels": {
+          "check": "root: golangci-lint v2.15.0 reports no issues"
+        }
+      },
+      {
+        "name": "root: go.mod says go 1.27.0",
+        "status": "passed",
+        "duration": 8,
+        "labels": {
+          "check": "root: go.mod says go 1.27.0"
+        }
+      },
+      {
+        "name": "test/: go.mod says go 1.27.0",
+        "status": "passed",
+        "duration": 7,
+        "labels": {
+          "check": "test/: go.mod says go 1.27.0"
+        }
+      },
+      {
+        "name": "examples/basic_usage: go.mod says go 1.27.0",
+        "status": "passed",
+        "duration": 8,
+        "labels": {
+          "check": "examples/basic_usage: go.mod says go 1.27.0"
+        }
+      },
+      {
+        "name": "root: go mod tidy -diff is empty",
+        "status": "passed",
+        "duration": 27,
+        "labels": {
+          "check": "root: go mod tidy -diff is empty"
+        }
+      },
+      {
+        "name": "test/: go mod tidy -diff is empty",
+        "status": "passed",
+        "duration": 22,
+        "labels": {
+          "check": "test/: go mod tidy -diff is empty"
+        }
+      },
+      {
+        "name": "examples/basic_usage: go mod tidy -diff is empty",
+        "status": "passed",
+        "duration": 21,
+        "labels": {
+          "check": "examples/basic_usage: go mod tidy -diff is empty"
+        }
+      },
+      {
+        "name": "root: requires go-cliutil v0.4.0 and go-dt v0.6.1 from published tags",
+        "status": "passed",
+        "duration": 9,
+        "labels": {
+          "check": "root: requires go-cliutil v0.4.0 and go-dt v0.6.1 from published tags"
+        }
+      },
+      {
+        "name": "root: every go-pkgs sibling is required at a tagged vX.Y.Z",
+        "status": "passed",
+        "duration": 5,
+        "labels": {
+          "check": "root: every go-pkgs sibling is required at a tagged vX.Y.Z"
+        }
+      },
+      {
+        "name": "root: no replace directive",
+        "status": "passed",
+        "duration": 4,
+        "labels": {
+          "check": "root: no replace directive"
+        }
+      },
+      {
+        "name": "test/: the only replace points go-testutil at ..",
+        "status": "passed",
+        "duration": 4,
+        "labels": {
+          "check": "test/: the only replace points go-testutil at .."
+        }
+      },
+      {
+        "name": "examples/basic_usage: the only replace points go-testutil at ../../",
+        "status": "passed",
+        "duration": 4,
+        "labels": {
+          "check": "examples/basic_usage: the only replace points go-testutil at ../../"
+        }
+      },
+      {
+        "name": "both workflows set up Go 1.27",
+        "status": "passed",
+        "duration": 5,
+        "labels": {
+          "check": "both workflows set up Go 1.27"
+        }
+      },
+      {
+        "name": "no workflow or Makefile mentions GOEXPERIMENT",
+        "status": "passed",
+        "duration": 4,
+        "labels": {
+          "check": "no workflow or Makefile mentions GOEXPERIMENT"
+        }
+      },
+      {
+        "name": "release.yml excludes .endless/ from the commit list",
+        "status": "passed",
+        "duration": 4,
+        "labels": {
+          "check": "release.yml excludes .endless/ from the commit list"
+        }
+      },
+      {
+        "name": "/bin/ is gitignored",
+        "status": "passed",
+        "duration": 6,
+        "labels": {
+          "check": "/bin/ is gitignored"
+        }
+      },
+      {
+        "name": "nothing under bin/ is tracked",
+        "status": "passed",
+        "duration": 6,
+        "labels": {
+          "check": "nothing under bin/ is tracked"
+        }
+      },
+      {
+        "name": "main checkout has no uncommitted change outside .endless/",
+        "status": "passed",
+        "duration": 13,
+        "labels": {
+          "check": "main checkout has no uncommitted change outside .endless/"
+        }
+      },
+      {
+        "name": "no v0.3.x tag exists yet",
+        "status": "passed",
+        "duration": 8,
+        "labels": {
+          "check": "no v0.3.x tag exists yet"
+        }
+      }
+    ]
+  }
+}
