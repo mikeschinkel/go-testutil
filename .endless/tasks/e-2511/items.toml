@@ -45,3 +45,9 @@ id = "P8"
 kind = "deliverable"
 statement = "The Release workflow's commit list excludes commits that touch only .endless/ (the ':(exclude).endless' pathspec), which is what E-2497 asks for"
 verify = "grep \"':(exclude).endless'\" .github/workflows/release.yml"
+
+[[item]]
+id = "P9"
+kind = "deliverable"
+statement = "/bin/, where make examples writes binaries, is gitignored and nothing under it is tracked"
+verify = "git check-ignore bin/x; git ls-files bin is empty"
