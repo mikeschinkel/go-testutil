@@ -39,3 +39,9 @@ id = "P7"
 kind = "deliverable"
 statement = "Both GitHub workflows set up Go 1.27 and no workflow or Makefile mentions GOEXPERIMENT"
 verify = "grep GO_VERSION and GOEXPERIMENT across .github/workflows and Makefile"
+
+[[item]]
+id = "P8"
+kind = "deliverable"
+statement = "The Release workflow's commit list excludes commits that touch only .endless/ (the ':(exclude).endless' pathspec), which is what E-2497 asks for"
+verify = "grep \"':(exclude).endless'\" .github/workflows/release.yml"
