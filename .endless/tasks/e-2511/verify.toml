@@ -6,7 +6,7 @@
 # tests pass; every module builds, vets and is tidy from published tags alone
 # (GOWORK=off); the go-pkgs Go 1.27 baseline holds in go.mod and both
 # workflows; sibling go-pkgs modules are required by published version with no
-# cross-repo replace; main is clean and pushed outside .endless/; and no tag
+# cross-repo replace; main is clean outside .endless/; and no tag
 # for the proposed release exists, since the owner tags through the Release
 # workflow.
 schema = 1
@@ -146,16 +146,11 @@ name   = "nothing under bin/ is tracked"
 sh     = "git ls-files bin"
 equals = ""
 
-# ── P1: main is clean outside .endless/ and pushed to origin ────────────────
+# ── P1: main is clean outside .endless/ (the owner pushes after the land) ───
 
 [[check]]
 name   = "main checkout has no uncommitted change outside .endless/"
 sh     = "git -C \"$(git rev-parse --git-common-dir)/..\" status --porcelain -- . ':(exclude).endless'"
-equals = ""
-
-[[check]]
-name   = "main holds no commit outside .endless/ that origin/main lacks"
-sh     = "git log origin/main..main --format='%h %s' -- . ':(exclude).endless'"
 equals = ""
 
 # ── P5: no tag was created; the owner tags through the Release workflow ─────
