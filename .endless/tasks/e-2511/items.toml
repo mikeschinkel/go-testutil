@@ -27,3 +27,9 @@ statement = "The owner has, for each go-testutil module changed since its last t
 id = "P5"
 kind = "exclusion"
 statement = "Creates and pushes no tags; the owner tags through the Release workflow"
+
+[[item]]
+id = "P6"
+kind = "deliverable"
+statement = "Every go.mod in go-testutil (root, test/, examples/basic_usage) says go 1.27.0 and is tidy under Go 1.27"
+verify = "grep '^go ' in each go.mod; go mod tidy -diff is empty in each module"
