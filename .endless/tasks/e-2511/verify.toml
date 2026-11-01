@@ -148,9 +148,12 @@ equals = ""
 
 # ── P1: main is clean outside .endless/ (the owner pushes after the land) ───
 
+# .claude/settings.local.json is Claude Code's per-user file; this branch
+# gitignores it, but the main checkout applies main's ignore rules until the
+# land, so the check leaves it out by name.
 [[check]]
 name   = "main checkout has no uncommitted change outside .endless/"
-sh     = "git -C \"$(git rev-parse --git-common-dir)/..\" status --porcelain -- . ':(exclude).endless'"
+sh     = "git -C \"$(git rev-parse --git-common-dir)/..\" status --porcelain -- . ':(exclude).endless' ':(exclude).claude/settings.local.json'"
 equals = ""
 
 # ── P5: no tag was created; the owner tags through the Release workflow ─────

@@ -41,3 +41,6 @@ go.work.sum
 
 # Built binaries (`make examples`)
 /bin/
+
+# Claude Code per-user local settings
+.claude/settings.local.json
