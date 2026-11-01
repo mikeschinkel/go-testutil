@@ -51,3 +51,9 @@ id = "P9"
 kind = "deliverable"
 statement = "/bin/, where make examples writes binaries, is gitignored and nothing under it is tracked"
 verify = "git check-ignore bin/x; git ls-files bin is empty"
+
+[[item]]
+id = "P10"
+kind = "deliverable"
+statement = ".claude/settings.local.json, Claude Code's per-user local settings file, is gitignored"
+verify = "git check-ignore .claude/settings.local.json"
