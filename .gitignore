@@ -38,3 +38,6 @@ go.work.sum
 .endless/logs/
 .endless/worktree.json
 .endless/worktree.lock
+
+# Built binaries (`make examples`)
+/bin/
