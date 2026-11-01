@@ -13,8 +13,8 @@ go-testutil has one versioned module, the root `github.com/mikeschinkel/go-testu
 
 **Proposed version: v0.3.0.** The accessor rename is a breaking API change, and under v0.x semver a breaking change bumps the minor. go-cliutil/test and go-cfgstore/test already require go-testutil v0.3.0 behind a local replace, so this is the version those modules expect.
 
-**Draft release description** (the `description` input of the Release workflow):
+**Draft release description** (the `description` input of the Release workflow; the body renders as Markdown):
 
-> Renames BufferedWriter's accessors to say what they capture: GetPrintOutput, GetErrorOutput, GetPrintLines, GetErrorLines, CountPrintLines and CountErrorLines replace GetStdout, GetStderr, GetStdoutLines, GetStderrLines, CountStdoutLines and CountStderrLines; callers of the old names must update. Requires go-cliutil v0.4.0, go-dt v0.6.1 and Go 1.27.
+> Renames `BufferedWriter`'s accessors to say what they capture: `GetPrintOutput`, `GetErrorOutput`, `GetPrintLines`, `GetErrorLines`, `CountPrintLines` and `CountErrorLines` replace `GetStdout`, `GetStderr`, `GetStdoutLines`, `GetStderrLines`, `CountStdoutLines` and `CountStderrLines`; callers of the old names must update. Requires `go-cliutil` v0.4.0, `go-dt` v0.6.1 and Go 1.27.
 
 **Order of operations for the owner:** land E-2511, push main, run the Release workflow with version `v0.3.0` and the description above. gomion can then drop its replace for go-testutil and require v0.3.0.
