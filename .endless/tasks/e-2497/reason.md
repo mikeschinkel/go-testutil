@@ -1,0 +1,1 @@
+E-2511 added the ':(exclude).endless' pathspec to release.yml's git log as part of the go-pkgs baseline, which is E-2497's whole change; it landed with E-2511.
