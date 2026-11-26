@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/mikeschinkel/go-cliutil"
 	"github.com/mikeschinkel/go-testutil"
 )
 
@@ -31,8 +32,7 @@ func main() {
 	fmt.Println("   Controls output based on verbosity level")
 
 	bwVerbose := testutil.NewBufferedWriter()
-	bwVerbose.SetVerbosity(2)
-	bwVerbose.Printf("Verbose output\n")
+	bwVerbose.WithVerbosity(cliutil.MediumVerbosity).Printf("Verbose output\n")
 	fmt.Printf("   Captured: %q\n", bwVerbose.GetPrintOutput())
 
 	// Example 3: BufferedLogHandler for capturing log output
@@ -95,8 +95,7 @@ func main() {
 	fmt.Println("   Suppressing output with quiet flag")
 
 	bwQuiet := testutil.NewBufferedWriter()
-	bwQuiet.SetQuiet(true)
-	bwQuiet.Printf("This is suppressed\n")
+	bwQuiet.WithQuiet(true).Printf("This is suppressed\n")
 
 	output := bwQuiet.GetPrintOutput()
 	fmt.Printf("   Buffer is empty (output suppressed): %v\n", len(output) == 0)

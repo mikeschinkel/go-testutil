@@ -3,6 +3,7 @@ package test
 import (
 	"errors"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/mikeschinkel/go-cliutil"
@@ -48,10 +49,10 @@ func TestBufferedWriter_Interface(t *testing.T) {
 
 func TestBufferedWriter_VerbosityLevels(t *testing.T) {
 	writer := testutil.NewBufferedWriter()
-	writer.SetVerbosity(2)
+	w := writer.WithVerbosity(cliutil.MediumVerbosity)
 
 	// Level 1 should work (verbosity 2 >= useLevel 1)
-	writer.Printf("Level 1 message")
+	w.Printf("Level 1 message")
 	if !writer.ContainsStdout("Level 1 message") {
 		t.Error("Level 1 message should be captured")
 	}
@@ -59,7 +60,7 @@ func TestBufferedWriter_VerbosityLevels(t *testing.T) {
 	writer.Reset()
 
 	// Level 2 should work (verbosity 2 >= useLevel 2)
-	v2 := writer.V2()
+	v2 := w.V2()
 	v2.Printf("Level 2 message")
 	if !writer.ContainsStdout("Level 2 message") {
 		t.Error("Level 2 message should be captured")
@@ -68,7 +69,7 @@ func TestBufferedWriter_VerbosityLevels(t *testing.T) {
 	writer.Reset()
 
 	// Level 3 should NOT work (verbosity 2 < useLevel 3)
-	v3 := writer.V3()
+	v3 := w.V3()
 	v3.Printf("Level 3 message")
 	if writer.ContainsStdout("Level 3 message") {
 		t.Error("Level 3 message should NOT be captured with verbosity 2")
@@ -77,22 +78,22 @@ func TestBufferedWriter_VerbosityLevels(t *testing.T) {
 
 func TestBufferedWriter_QuietMode(t *testing.T) {
 	writer := testutil.NewBufferedWriter()
-	writer.SetQuiet(true)
+	w := writer.WithQuiet(true)
 
 	// Printf should be suppressed in quiet mode
-	writer.Printf("Should not appear")
+	w.Printf("Should not appear")
 	if writer.ContainsStdout("Should not appear") {
 		t.Error("Printf should be suppressed in quiet mode")
 	}
 
 	// Errorf should still work in quiet mode
-	writer.Errorf("Error should appear")
+	w.Errorf("Error should appear")
 	if !writer.ContainsStderr("Error should appear") {
 		t.Error("Errorf should work even in quiet mode")
 	}
 
 	// Loud() should bypass quiet mode
-	loud := writer.Loud()
+	loud := w.Loud()
 	loud.Printf("Loud message")
 	if !writer.ContainsStdout("Loud message") {
 		t.Error("Loud() should bypass quiet mode")
@@ -190,5 +191,175 @@ func TestBufferedWriter_ConcurrentAccess(t *testing.T) {
 	}
 	if writer.CountErrorLines() == 0 {
 		t.Error("Expected some doterr lines from concurrent writes")
+	}
+}
+
+func TestBufferedWriter_Getters(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+	if writer.Quiet() {
+		t.Error("NewBufferedWriter() should not be quiet")
+	}
+	if writer.Verbosity() != cliutil.HighVerbosity {
+		t.Errorf("NewBufferedWriter() verbosity: want %d, got %d", cliutil.HighVerbosity, writer.Verbosity())
+	}
+
+	qw := writer.WithQuiet(true).(*testutil.BufferedWriter)
+	if !qw.Quiet() {
+		t.Error("WithQuiet(true) should return a quiet Writer")
+	}
+	if qw.Verbosity() != writer.Verbosity() {
+		t.Errorf("WithQuiet() should keep verbosity %d, got %d", writer.Verbosity(), qw.Verbosity())
+	}
+
+	vw := writer.WithVerbosity(cliutil.LowVerbosity).(*testutil.BufferedWriter)
+	if vw.Verbosity() != cliutil.LowVerbosity {
+		t.Errorf("WithVerbosity(1) verbosity: want 1, got %d", vw.Verbosity())
+	}
+	if vw.Quiet() != writer.Quiet() {
+		t.Error("WithVerbosity() should keep the quiet setting")
+	}
+}
+
+func TestBufferedWriter_WithLeavesReceiverUnchanged(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+	_ = writer.WithQuiet(true)
+	_ = writer.WithVerbosity(cliutil.NoVerbosity)
+
+	if writer.Quiet() {
+		t.Error("WithQuiet() should not change the receiver's quiet setting")
+	}
+	if writer.Verbosity() != cliutil.HighVerbosity {
+		t.Errorf("WithVerbosity() should not change the receiver's verbosity; got %d", writer.Verbosity())
+	}
+
+	writer.Printf("receiver prints\n")
+	if !writer.ContainsStdout("receiver prints") {
+		t.Error("Receiver should still print after WithQuiet(true)")
+	}
+}
+
+func TestBufferedWriter_WithSharesBuffers(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+
+	writer.WithQuiet(false).Printf("from WithQuiet\n")
+	writer.WithVerbosity(cliutil.LowVerbosity).Printf("from WithVerbosity\n")
+	writer.WithQuiet(true).Errorf("error from quiet\n")
+
+	if !writer.ContainsStdout("from WithQuiet") {
+		t.Error("WithQuiet Writer output should appear in the original's buffer")
+	}
+	if !writer.ContainsStdout("from WithVerbosity") {
+		t.Error("WithVerbosity Writer output should appear in the original's buffer")
+	}
+	if !writer.ContainsStderr("error from quiet") {
+		t.Error("WithQuiet(true) Writer should still record Errorf in the original's buffer")
+	}
+
+	writer.WithQuiet(true).Printf("suppressed\n")
+	writer.WithVerbosity(cliutil.LowVerbosity).V2().Printf("above verbosity\n")
+	if writer.ContainsStdout("suppressed") || writer.ContainsStdout("above verbosity") {
+		t.Errorf("With* Writers should apply their own setting; got %q", writer.GetPrintOutput())
+	}
+}
+
+func TestBufferedWriter_WithKeepsUseLevelAndFreshCaches(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+	v3 := writer.V3().(*testutil.BufferedWriter)
+
+	// A V3 Writer at verbosity 2 keeps use level 3, so prints nothing
+	v3.WithVerbosity(cliutil.MediumVerbosity).Printf("level 3 at verbosity 2\n")
+	if writer.ContainsStdout("level 3 at verbosity 2") {
+		t.Error("WithVerbosity() should keep the receiver's use level")
+	}
+
+	// A cached V2 of the receiver must not be reused by the derived Writer
+	_ = writer.V2()
+	qw := writer.WithQuiet(true)
+	qw.V2().Printf("quiet v2\n")
+	if writer.ContainsStdout("quiet v2") {
+		t.Error("WithQuiet() should return a Writer with empty V2/V3/Loud caches")
+	}
+}
+
+func TestBufferedWriter_NoVerbosity(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+	w := writer.WithVerbosity(cliutil.NoVerbosity)
+
+	w.Printf("should not appear\n")
+	w.Errorf("error appears\n")
+
+	if writer.GetPrintOutput() != "" {
+		t.Errorf("Verbosity 0 should record nothing from Printf; got %q", writer.GetPrintOutput())
+	}
+	if !writer.ContainsStderr("error appears") {
+		t.Error("Verbosity 0 should still record Errorf")
+	}
+}
+
+func TestBufferedWriter_WithVerbosityPanicsOutOfRange(t *testing.T) {
+	for _, v := range []cliutil.Verbosity{-1, 4} {
+		func() {
+			defer func() {
+				if recover() == nil {
+					t.Errorf("WithVerbosity(%d) should panic", v)
+				}
+			}()
+			testutil.NewBufferedWriter().WithVerbosity(v)
+		}()
+	}
+}
+
+func TestBufferedWriter_QuietLoudAndLevels(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+	qw := writer.WithQuiet(true)
+
+	qw.V2().Printf("quiet v2\n")
+	qw.V3().Printf("quiet v3\n")
+	if writer.GetPrintOutput() != "" {
+		t.Errorf("V2 and V3 of a quiet Writer should record nothing; got %q", writer.GetPrintOutput())
+	}
+
+	qw.Loud().Printf("loud after quiet\n")
+	if !writer.ContainsStdout("loud after quiet") {
+		t.Error("Loud() should record Printf output regardless of WithQuiet(true)")
+	}
+
+	// Loud of the receiver, then quieted, still prints
+	loud := writer.Loud().(*testutil.BufferedWriter)
+	loud.WithQuiet(true).Printf("loud then quiet\n")
+	if !writer.ContainsStdout("loud then quiet") {
+		t.Error("A Loud Writer should print whatever its quiet setting")
+	}
+}
+
+func TestBufferedWriter_SharedMutexRace(t *testing.T) {
+	writer := testutil.NewBufferedWriter()
+	writers := []cliutil.Writer{
+		writer,
+		writer.V2(),
+		writer.V3(),
+		writer.Loud(),
+		writer.WithQuiet(false),
+		writer.WithVerbosity(cliutil.HighVerbosity),
+	}
+
+	var wg sync.WaitGroup
+	for i, w := range writers {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for j := 0; j < 100; j++ {
+				w.Printf("w%d-%d\n", i, j)
+				w.Errorf("w%d-%d\n", i, j)
+			}
+		}()
+	}
+	wg.Wait()
+
+	if got, want := writer.CountPrintLines(), len(writers)*100; got != want {
+		t.Errorf("Expected %d stdout lines, got %d", want, got)
+	}
+	if got, want := writer.CountErrorLines(), len(writers)*100; got != want {
+		t.Errorf("Expected %d stderr lines, got %d", want, got)
 	}
 }

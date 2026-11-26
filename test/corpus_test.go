@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/mikeschinkel/go-cliutil"
 	"github.com/mikeschinkel/go-testutil"
 )
 
@@ -120,8 +121,7 @@ func runBufferedWriterVerbosityCorpus(t *testing.T, data []byte) {
 	}()
 
 	bw := testutil.NewBufferedWriter()
-	bw.SetVerbosity(verbosity)
-	bw.Printf("test")
+	bw.WithVerbosity(cliutil.Verbosity(verbosity)).Printf("test")
 	_ = bw.GetPrintOutput()
 }
 

@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"testing"
 
+	"github.com/mikeschinkel/go-cliutil"
 	"github.com/mikeschinkel/go-testutil"
 )
 
@@ -107,9 +108,8 @@ func FuzzBufferedWriterVerbosity(f *testing.F) {
 		}()
 
 		bw := testutil.NewBufferedWriter()
-		bw.SetVerbosity(verbosity)
-		bw.SetQuiet(true)
-		bw.Printf("test message")
+		vw := bw.WithVerbosity(cliutil.Verbosity(verbosity)).(*testutil.BufferedWriter)
+		vw.WithQuiet(true).Printf("test message")
 		_ = bw.GetPrintOutput()
 	})
 }

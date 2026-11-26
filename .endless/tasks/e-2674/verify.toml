@@ -1,0 +1,70 @@
+# Verification suite for E-2674 — BufferedWriter gains Quiet(), Verbosity(),
+# WithQuiet(bool) and WithVerbosity(cliutil.Verbosity), loses SetQuiet and
+# SetVerbosity, and every Writer over the same buffers shares one mutex.
+#
+# DO NOT EDIT unless you ARE E-2674 — see .endless/tasks/CLAUDE.md.
+#
+# P8 (the pushed v0.4.0 tag) is a post-land item and is not checked here.
+schema = 1
+task   = "E-2674"
+
+# ── P2, P3, P5, P6: the test/ module's unit and fuzz-corpus tests, first ────
+
+[[check]]
+name   = "test/: unit and fuzz-corpus tests"
+runner = "gotest"
+dir    = "test"
+paths  = ["./..."]
+
+# ── P5, P7: go test -race passes in test/ ───────────────────────────────────
+
+[[check]]
+name = "test/: go vet and go test -race with GOWORK=off"
+dir  = "test"
+sh   = "GOWORK=off GOFLAGS=-mod=readonly go vet ./... && GOWORK=off GOFLAGS=-mod=readonly go test -race -count=1 ./..."
+
+# ── P1: the package builds, and BufferedWriter still satisfies cliutil.Writer
+
+[[check]]
+name = "root: go build and go vet with GOWORK=off"
+sh   = "GOWORK=off GOFLAGS=-mod=readonly go build ./... && GOWORK=off GOFLAGS=-mod=readonly go vet ./..."
+
+[[check]]
+name     = "root: BufferedWriter declares the four new methods"
+sh       = "GOWORK=off go doc . BufferedWriter"
+contains = "func (w *BufferedWriter) WithVerbosity(verbosity cliutil.Verbosity) cliutil.Writer"
+
+[[check]]
+name     = "root: BufferedWriter declares Quiet, Verbosity and WithQuiet"
+sh       = "GOWORK=off go doc . BufferedWriter | grep -cE 'func \\(w \\*BufferedWriter\\) (Quiet\\(\\) bool|Verbosity\\(\\) cliutil.Verbosity|WithQuiet\\(quiet bool\\) cliutil.Writer)$'"
+equals   = "3"
+
+# ── P4: the setters are gone, and the example uses the With methods ─────────
+
+[[check]]
+name   = "no SetQuiet or SetVerbosity anywhere in go-testutil's Go code"
+sh     = "grep -rnE 'SetQuiet|SetVerbosity' --include='*.go' . || true"
+equals = ""
+
+[[check]]
+name = "examples/basic_usage: go build and go vet with GOWORK=off"
+dir  = "examples/basic_usage"
+sh   = "GOWORK=off GOFLAGS=-mod=readonly go build -o /dev/null . && GOWORK=off GOFLAGS=-mod=readonly go vet ./..."
+
+[[check]]
+name     = "examples/basic_usage: quiet example still suppresses output"
+dir      = "examples/basic_usage"
+sh       = "GOWORK=off GOFLAGS=-mod=readonly go run ."
+contains = "Buffer is empty (output suppressed): true"
+
+# ── Formatting and lint ─────────────────────────────────────────────────────
+
+[[check]]
+name   = "gofmt -l reports nothing"
+sh     = "gofmt -l ."
+equals = ""
+
+[[check]]
+name     = "golangci-lint v2.15.0 is clean in the root and test/ modules"
+sh       = "go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0 run ./... --timeout=5m && cd test && go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0 run ./... --timeout=5m"
+contains = "0 issues."

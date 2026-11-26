@@ -10,13 +10,17 @@ import (
 	"github.com/mikeschinkel/go-cliutil"
 )
 
-// BufferedWriter implements cliutil.Writer and captures all output in buffers for testing
+// BufferedWriter implements cliutil.Writer and captures all output in buffers
+// for testing. Every Writer derived from it through V2, V3, Loud, WithQuiet or
+// WithVerbosity shares its buffers and its mutex, so a test reads everything
+// written through any of them from the original BufferedWriter.
 type BufferedWriter struct {
 	stdBuf     *bytes.Buffer
 	errBuf     *bytes.Buffer
-	mu         sync.RWMutex
+	mu         *sync.RWMutex
 	quiet      bool
-	verbosity  int
+	loud       bool
+	verbosity  cliutil.Verbosity
 	useLevel   int
 	loudWriter cliutil.Writer
 	v2Writer   cliutil.Writer
@@ -31,9 +35,10 @@ func NewBufferedWriter() *BufferedWriter {
 	return &BufferedWriter{
 		stdBuf:    &bytes.Buffer{},
 		errBuf:    &bytes.Buffer{},
+		mu:        &sync.RWMutex{},
 		quiet:     false,
-		verbosity: 3, // Default to max verbosity for testing
-		useLevel:  1, // Default level
+		verbosity: cliutil.HighVerbosity, // Default to max verbosity for testing
+		useLevel:  1,                     // Default level
 	}
 }
 
@@ -42,10 +47,10 @@ func (w *BufferedWriter) Printf(format string, args ...any) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.quiet {
+	if w.quiet && !w.loud {
 		return
 	}
-	if w.verbosity < w.useLevel {
+	if int(w.verbosity) < w.useLevel {
 		return
 	}
 
@@ -72,7 +77,21 @@ func (w *BufferedWriter) Errorf(format string, args ...any) {
 	w.errBuf.WriteString(formatted)
 }
 
-// Loud returns a Writer that ignores the quiet setting
+// derive returns a new BufferedWriter over w's buffers and mutex with w's
+// settings and empty V2/V3/Loud caches. The caller holds w.mu.
+func (w *BufferedWriter) derive() *BufferedWriter {
+	return &BufferedWriter{
+		stdBuf:    w.stdBuf, // Share the same buffers
+		errBuf:    w.errBuf,
+		mu:        w.mu, // and the same mutex
+		quiet:     w.quiet,
+		loud:      w.loud,
+		verbosity: w.verbosity,
+		useLevel:  w.useLevel,
+	}
+}
+
+// Loud returns a Writer that prints whatever its quiet setting
 func (w *BufferedWriter) Loud() cliutil.Writer {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -81,13 +100,9 @@ func (w *BufferedWriter) Loud() cliutil.Writer {
 		return w.loudWriter
 	}
 
-	w.loudWriter = &BufferedWriter{
-		stdBuf:    w.stdBuf, // Share the same buffers
-		errBuf:    w.errBuf,
-		quiet:     false, // Always loud
-		verbosity: w.verbosity,
-		useLevel:  w.useLevel,
-	}
+	lw := w.derive()
+	lw.loud = true
+	w.loudWriter = lw
 	return w.loudWriter
 }
 
@@ -100,13 +115,9 @@ func (w *BufferedWriter) V2() cliutil.Writer {
 		return w.v2Writer
 	}
 
-	w.v2Writer = &BufferedWriter{
-		stdBuf:    w.stdBuf, // Share the same buffers
-		errBuf:    w.errBuf,
-		quiet:     w.quiet,
-		verbosity: w.verbosity,
-		useLevel:  2, // Level 2
-	}
+	v2 := w.derive()
+	v2.useLevel = 2
+	w.v2Writer = v2
 	return w.v2Writer
 }
 
@@ -119,14 +130,50 @@ func (w *BufferedWriter) V3() cliutil.Writer {
 		return w.v3Writer
 	}
 
-	w.v3Writer = &BufferedWriter{
-		stdBuf:    w.stdBuf, // Share the same buffers
-		errBuf:    w.errBuf,
-		quiet:     w.quiet,
-		verbosity: w.verbosity,
-		useLevel:  3, // Level 3
-	}
+	v3 := w.derive()
+	v3.useLevel = 3
+	w.v3Writer = v3
 	return w.v3Writer
+}
+
+// Quiet reports whether Printf output is suppressed
+func (w *BufferedWriter) Quiet() bool {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	return w.quiet
+}
+
+// Verbosity returns the verbosity level Printf output is filtered by
+func (w *BufferedWriter) Verbosity() cliutil.Verbosity {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	return w.verbosity
+}
+
+// WithQuiet returns a Writer over w's buffers with the quiet setting changed,
+// leaving w unchanged
+func (w *BufferedWriter) WithQuiet(quiet bool) cliutil.Writer {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	qw := w.derive()
+	qw.quiet = quiet
+	return qw
+}
+
+// WithVerbosity returns a Writer over w's buffers with the verbosity changed,
+// leaving w unchanged. It accepts 0 (cliutil.NoVerbosity, where Printf writes
+// nothing) to 3, and panics outside that range.
+func (w *BufferedWriter) WithVerbosity(verbosity cliutil.Verbosity) cliutil.Writer {
+	if verbosity < cliutil.NoVerbosity || verbosity > cliutil.HighVerbosity {
+		panic(fmt.Sprintf("Invalid verbosity for BufferedWriter; must be between 0-3; got %d", verbosity))
+	}
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	vw := w.derive()
+	vw.verbosity = verbosity
+	return vw
 }
 
 // Testing helper methods
@@ -179,23 +226,6 @@ func (w *BufferedWriter) Reset() {
 	defer w.mu.Unlock()
 	w.stdBuf.Reset()
 	w.errBuf.Reset()
-}
-
-// SetQuiet sets the quiet mode (suppresses all Printf output)
-func (w *BufferedWriter) SetQuiet(quiet bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.quiet = quiet
-}
-
-// SetVerbosity sets the verbosity level (1-3)
-func (w *BufferedWriter) SetVerbosity(verbosity int) {
-	if verbosity < 1 || verbosity > 3 {
-		panic(fmt.Sprintf("Invalid verbosity for BufferedWriter; must be between 1-3; got %d", verbosity))
-	}
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.verbosity = verbosity
 }
 
 // GetPrintLines returns stdout content split into lines (excluding empty lines)
